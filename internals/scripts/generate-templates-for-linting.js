@@ -79,7 +79,6 @@ containerGen
     type: 'React.PureComponent',
     wantHeaders: true,
     wantActionsAndReducer: true,
-    wantSagas: true,
     wantMessages: true,
     wantLoadable: true,
   })
@@ -93,7 +92,6 @@ containerGen
     type: 'React.Component',
     wantHeaders: true,
     wantActionsAndReducer: true,
-    wantSagas: true,
     wantMessages: true,
     wantLoadable: true,
   })
@@ -107,7 +105,6 @@ containerGen
     type: 'Stateless Function',
     wantHeaders: true,
     wantActionsAndReducer: true,
-    wantSagas: true,
     wantMessages: true,
     wantLoadable: true,
   })
