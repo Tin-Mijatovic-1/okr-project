@@ -4,14 +4,12 @@
  *
  */
 
-import { fromJS } from 'immutable';
-
 import { CHANGE_LOCALE } from './constants';
 import { DEFAULT_LOCALE } from '../../i18n'; // eslint-disable-line
 
-export const initialState = fromJS({
+export const initialState = {
   locale: DEFAULT_LOCALE,
-});
+};
 
 function languageProviderReducer(state = initialState, action) {
   switch (action.type) {
