@@ -9,6 +9,8 @@ import {
   UPGRADE_CRYSTAL_MINE,
   GAME_LOOP,
   UPGRADE_FUEL_SYNTHESIZER,
+  UPGRADE_POWER_PLANT,
+  NOT_ENOUGH_ENERGY,
 } from './constants';
 
 const upgradeMetalMineActionCreator = () => ({
@@ -38,6 +40,16 @@ const upgradeFuelSynthesizerActionCreator = () => ({
 export function upgradeFuelSynthesizer() {
   return dispatch => {
     dispatch(upgradeFuelSynthesizerActionCreator());
+  };
+}
+
+const upgradePowerPlantActionCreator = () => ({
+  type: UPGRADE_POWER_PLANT,
+});
+
+export function upgradePowerPlant() {
+  return dispatch => {
+    dispatch(upgradePowerPlantActionCreator());
   };
 }
 
