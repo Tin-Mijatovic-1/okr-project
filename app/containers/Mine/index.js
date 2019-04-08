@@ -53,16 +53,20 @@ const StyledButton = styled(({ ...other }) => (
 ))`
   &.root {
     color: white;
-    background-color: #70b800;
+    background-color: ${props => (props.upgradeable ? '#228B22' : '#E34234')};
     align: center;
-    border: 1px solid #006400;
-  }
+    border: 1px solid #696969;
+    &:hover {
+    background-color: ${props => (props.upgradeable ? '#228B22' : '#E34234')};
+    opacity: 0.6;
+  },
 `;
 
 /* eslint-disable react/prefer-stateless-function */
 export class Mine extends React.Component {
   render() {
     const { name, label, onUpgradeMine, data } = this.props;
+    const { productionCoefficient } = this.props.game;
     return (
       <StyledCard>
         <CardContent>
@@ -72,7 +76,9 @@ export class Mine extends React.Component {
           </StyledTypography>
           <StyledTypography variant="h3">
             Production:
-            <StyledTypography paragraph>{data.mineProduction}</StyledTypography>
+            <StyledTypography paragraph>
+              {data.mineProduction * productionCoefficient}
+            </StyledTypography>
           </StyledTypography>
           <StyledTypography variant="h3">
             Upgrade Cost Metal:
@@ -93,6 +99,7 @@ export class Mine extends React.Component {
             </StyledTypography>
           </StyledTypography>
           <StyledButton
+            upgradeable={isUpgradeable(this.props) ? 1 : 0}
             variant="contained"
             onClick={() => onUpgradeMine(label)}
           >
@@ -102,6 +109,13 @@ export class Mine extends React.Component {
       </StyledCard>
     );
   }
+}
+
+function isUpgradeable(props) {
+  return (
+    props.game.metalResources >= props.data.upgradeCostMetal &&
+    props.game.crystalResources >= props.data.upgradeCostCrystal
+  );
 }
 
 function mapStateToProps(state) {
@@ -115,6 +129,8 @@ Mine.propTypes = {
   name: PropTypes.string,
   onUpgradeMine: PropTypes.func.isRequired,
   data: PropTypes.object,
+  game: PropTypes.object,
+  productionCoefficient: PropTypes.number,
 };
 
 export default connect(mapStateToProps)(Mine);

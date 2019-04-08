@@ -9,12 +9,15 @@ import {
   UPGRADE_METAL_MINE,
   UPGRADE_CRYSTAL_MINE,
   UPGRADE_FUEL_SYNTHESIZER,
+  UPGRADE_POWER_PLANT,
 } from './constants';
 
 export const initialState = {
   metalResources: 1110,
-  crystalResources: 11110,
+  crystalResources: 1110,
   fuelResources: 1110,
+  totalEnergyRequired: 0,
+  productionCoefficient: 1,
 
   crystalMine: {
     mineProduction: 10,
@@ -33,11 +36,19 @@ export const initialState = {
     isUpgradeable: false,
   },
   fuelSynthesizer: {
-    mineProduction: 3,
+    mineProduction: 4,
     mineLevel: 1,
     upgradeCostMetal: 80,
     upgradeCostCrystal: 150,
     energyConsumption: 12,
+    isUpgradeable: false,
+  },
+  powerPlant: {
+    energyOutput: 30,
+    plantLevel: 1,
+    upgradeCostMetal: 80,
+    upgradeCostCrystal: 150,
+    fuelConsumptionPerTick: 2,
     isUpgradeable: false,
   },
 };
@@ -47,11 +58,57 @@ function gameInterfaceReducer(state = initialState, action) {
     case GAME_LOOP:
       return {
         ...state,
-        metalResources: state.metalResources + state.metalMine.mineProduction,
-        crystalResources:
-          state.crystalResources + state.crystalMine.mineProduction,
-        fuelResources:
-          state.fuelResources + state.fuelSynthesizer.mineProduction,
+        productionCoefficient: getProductionCoefficient(state),
+        metalResources: Math.round(
+          state.metalResources +
+            state.metalMine.mineProduction * state.productionCoefficient,
+        ),
+        crystalResources: Math.round(
+          state.crystalResources +
+            state.crystalMine.mineProduction * state.productionCoefficient,
+        ),
+        fuelResources: Math.round(
+          state.fuelResources +
+            (state.fuelSynthesizer.mineProduction -
+              state.powerPlant.fuelConsumptionPerTick) *
+              state.productionCoefficient,
+        ),
+        totalEnergyRequired:
+          state.metalMine.energyConsumption +
+          state.crystalMine.energyConsumption +
+          state.fuelSynthesizer.energyConsumption,
+        metalMine: {
+          ...state.metalMine,
+          isUpgradeable: isUpgradeable(
+            state,
+            state.metalMine.upgradeCostMetal,
+            state.metalMine.upgradeCostCrystal,
+          ),
+        },
+        crystalMine: {
+          ...state.crystalMine,
+          isUpgradeable: isUpgradeable(
+            state,
+            state.metalMine.upgradeCostMetal,
+            state.metalMine.upgradeCostCrystal,
+          ),
+        },
+        fuelSynthesizer: {
+          ...state.fuelSynthesizer,
+          isUpgradeable: isUpgradeable(
+            state,
+            state.metalMine.upgradeCostMetal,
+            state.metalMine.upgradeCostCrystal,
+          ),
+        },
+        powerPlant: {
+          ...state.powerPlant,
+          isUpgradeable: isUpgradeable(
+            state,
+            state.metalMine.upgradeCostMetal,
+            state.metalMine.upgradeCostCrystal,
+          ),
+        },
       };
     case UPGRADE_METAL_MINE:
       return {
@@ -124,9 +181,41 @@ function gameInterfaceReducer(state = initialState, action) {
         crystalResources:
           state.crystalResources - state.fuelSynthesizer.upgradeCostCrystal,
       };
+    case UPGRADE_POWER_PLANT:
+      return {
+        ...state,
+        powerPlant: {
+          ...state.powerPlant,
+          plantLevel: state.powerPlant.plantLevel + 1,
+          energyOutput: state.powerPlant.energyOutput + 20,
+          fuelConsumptionPerTick: Math.round(
+            state.powerPlant.fuelConsumptionPerTick * 1.7,
+          ),
+          upgradeCostMetal: Math.round(state.powerPlant.upgradeCostMetal * 1.5),
+          upgradeCostCrystal: Math.round(
+            state.powerPlant.upgradeCostCrystal * 1.5,
+          ),
+        },
+        energyAvailable: state.energyAvailable + state.powerPlant.energyOutput,
+        metalResources:
+          state.metalResources - state.powerPlant.upgradeCostMetal,
+        crystalResources:
+          state.crystalResources - state.powerPlant.upgradeCostCrystal,
+      };
     default:
       return state;
   }
+}
+
+function isUpgradeable(state, metalCost, crystalCost) {
+  return (
+    state.metalResources >= metalCost && state.crystalResources >= crystalCost
+  );
+}
+
+function getProductionCoefficient(state) {
+  if (state.totalEnergyRequired > state.powerPlant.energyOutput) return 0.1;
+  return 1;
 }
 
 export default gameInterfaceReducer;

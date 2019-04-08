@@ -14,39 +14,32 @@ import {
   upgradeCrystalMine,
   upgradeMetalMine,
   upgradeFuelSynthesizer,
+  upgradePowerPlant,
   gameLoop,
 } from './actions';
+import PowerPlant from '../../components/PowerPlant';
 
 /* eslint-disable react/prefer-stateless-function */
 export class GameInterface extends React.Component {
+  handleUpgradePlant = () => {
+    const { powerPlant } = this.props.game;
+    if (powerPlant.isUpgradeable) {
+      this.props.upgradePowerPlant();
+    }
+  };
+
   handleUpgradeMine = label => {
-    const {
-      metalMine,
-      crystalMine,
-      fuelSynthesizer,
-      crystalResources,
-      metalResources,
-      fuelResources,
-    } = this.props.game;
+    const { metalMine, crystalMine, fuelSynthesizer } = this.props.game;
     if (label === 'metalMine') {
-      if (
-        metalMine.upgradeCostMetal <= metalResources &&
-        metalMine.upgradeCostCrystal <= crystalResources
-      ) {
+      if (metalMine.isUpgradeable) {
         this.props.upgradeMetalMine();
       }
     } else if (label === 'crystalMine') {
-      if (
-        crystalMine.upgradeCostCrystal <= crystalResources &&
-        crystalMine.upgradeCostMetal <= metalResources
-      ) {
+      if (crystalMine.isUpgradeable) {
         this.props.upgradeCrystalMine();
       }
     } else if (label === 'fuelSynthesizer') {
-      if (
-        fuelSynthesizer.upgradeCostCrystal <= crystalResources &&
-        fuelSynthesizer.upgradeCostMetal <= metalResources
-      ) {
+      if (fuelSynthesizer.isUpgradeable) {
         this.props.upgradeFuelSynthesizer();
       }
     }
@@ -63,9 +56,11 @@ export class GameInterface extends React.Component {
       metalMine,
       crystalMine,
       fuelSynthesizer,
+      powerPlant,
       crystalResources,
       metalResources,
       fuelResources,
+      totalEnergyRequired,
     } = this.props.game;
     return (
       <div>
@@ -77,6 +72,12 @@ export class GameInterface extends React.Component {
         </div>
         <div>
           <strong>Fuel: {fuelResources}</strong>
+        </div>
+        <div>
+          <strong>
+            Energy Produced: {powerPlant.energyOutput} |  Energy Required:{' '}
+            {totalEnergyRequired}
+          </strong>
         </div>
         <div
           style={{
@@ -104,11 +105,12 @@ export class GameInterface extends React.Component {
             label="fuelSynthesizer"
             data={fuelSynthesizer}
           />
-          <Mine
+          <PowerPlant
             name="Power Plant"
-            onUpgradeMine={this.handleUpgradeMine}
+            onUpgradePlant={this.handleUpgradePlant}
             label="powerPlant"
-            data={crystalMine}
+            data={powerPlant}
+            game={this.props.game}
           />
         </div>
       </div>
@@ -118,6 +120,7 @@ export class GameInterface extends React.Component {
 
 GameInterface.propTypes = {
   game: PropTypes.object,
+  upgradePowerPlant: PropTypes.func,
   upgradeMetalMine: PropTypes.func,
   upgradeCrystalMine: PropTypes.func,
   upgradeFuelSynthesizer: PropTypes.func,
@@ -135,6 +138,7 @@ function mapDispatchToProps(dispatch) {
     upgradeMetalMine: () => dispatch(upgradeMetalMine()),
     upgradeCrystalMine: () => dispatch(upgradeCrystalMine()),
     upgradeFuelSynthesizer: () => dispatch(upgradeFuelSynthesizer()),
+    upgradePowerPlant: () => dispatch(upgradePowerPlant()),
     gameLoop: () => dispatch(gameLoop()),
   };
 }
