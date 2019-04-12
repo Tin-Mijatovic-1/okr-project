@@ -18,6 +18,7 @@ import {
   gameLoop,
 } from './actions';
 import PowerPlant from '../../components/PowerPlant';
+import TopNovbar from '../../components/TopNovbar';
 
 /* eslint-disable react/prefer-stateless-function */
 export class GameInterface extends React.Component {
@@ -62,8 +63,16 @@ export class GameInterface extends React.Component {
       fuelResources,
       totalEnergyRequired,
     } = this.props.game;
+    console.log('this.props.game:::', totalEnergyRequired);
     return (
       <div>
+        <TopNovbar
+          metal={metalResources}
+          crystal={crystalResources}
+          fuel={fuelResources}
+          energyProductin={powerPlant.energyOutput}
+          energyRequired={totalEnergyRequired}
+        />
         <div>
           <strong>Metal: {metalResources}</strong>
         </div>
@@ -75,7 +84,7 @@ export class GameInterface extends React.Component {
         </div>
         <div>
           <strong>
-            Energy Produced: {powerPlant.energyOutput} |  Energy Required:{' '}
+            Energy Produced: {powerPlant.energyOutput} | Energy Required:{' '}
             {totalEnergyRequired}
           </strong>
         </div>

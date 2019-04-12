@@ -77,7 +77,7 @@ export class Mine extends React.Component {
           <StyledTypography variant="h3">
             Production:
             <StyledTypography paragraph>
-              {data.mineProduction * productionCoefficient}
+              {Math.round(data.mineProduction * productionCoefficient)}
             </StyledTypography>
           </StyledTypography>
           <StyledTypography variant="h3">
