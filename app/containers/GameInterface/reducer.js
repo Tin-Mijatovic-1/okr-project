@@ -73,10 +73,6 @@ function gameInterfaceReducer(state = initialState, action) {
               state.powerPlant.fuelConsumptionPerTick) *
               state.productionCoefficient,
         ),
-        totalEnergyRequired:
-          state.metalMine.energyConsumption +
-          state.crystalMine.energyConsumption +
-          state.fuelSynthesizer.energyConsumption,
         metalMine: {
           ...state.metalMine,
           isUpgradeable: isUpgradeable(
@@ -113,6 +109,8 @@ function gameInterfaceReducer(state = initialState, action) {
     case UPGRADE_METAL_MINE:
       return {
         ...state,
+        totalEnergyRequired:
+          state.totalEnergyRequired + state.metalMine.energyConsumption,
         metalMine: {
           ...state.metalMine,
           mineLevel: state.metalMine.mineLevel + 1,
@@ -134,6 +132,8 @@ function gameInterfaceReducer(state = initialState, action) {
     case UPGRADE_CRYSTAL_MINE:
       return {
         ...state,
+        totalEnergyRequired:
+          state.totalEnergyRequired + state.crystalMine.energyConsumption,
         crystalMine: {
           ...state.crystalMine,
           mineLevel: state.crystalMine.mineLevel + 1,
@@ -159,6 +159,8 @@ function gameInterfaceReducer(state = initialState, action) {
     case UPGRADE_FUEL_SYNTHESIZER:
       return {
         ...state,
+        totalEnergyRequired:
+          state.totalEnergyRequired + state.fuelSynthesizer.energyConsumption,
         fuelSynthesizer: {
           ...state.fuelSynthesizer,
           mineLevel: state.fuelSynthesizer.mineLevel + 1,
@@ -187,7 +189,8 @@ function gameInterfaceReducer(state = initialState, action) {
         powerPlant: {
           ...state.powerPlant,
           plantLevel: state.powerPlant.plantLevel + 1,
-          energyOutput: state.powerPlant.energyOutput + 20,
+          energyOutput:
+            state.powerPlant.energyOutput + 9 * state.powerPlant.plantLevel,
           fuelConsumptionPerTick: Math.round(
             state.powerPlant.fuelConsumptionPerTick * 1.7,
           ),

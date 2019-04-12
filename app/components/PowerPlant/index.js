@@ -114,7 +114,6 @@ function isUpgradeable(props) {
 }
 
 PowerPlant.propTypes = {
-  label: PropTypes.string,
   name: PropTypes.string,
   onUpgradePlant: PropTypes.func.isRequired,
   data: PropTypes.object,
