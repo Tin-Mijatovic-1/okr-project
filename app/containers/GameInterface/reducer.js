@@ -13,9 +13,9 @@ import {
 } from './constants';
 
 export const initialState = {
-  metalResources: 1110,
-  crystalResources: 1110,
-  fuelResources: 1110,
+  metalResources: 11101,
+  crystalResources: 11110,
+  fuelResources: 11110,
   totalEnergyRequired: 0,
   productionCoefficient: 1,
 
@@ -24,7 +24,7 @@ export const initialState = {
     mineLevel: 1,
     upgradeCostMetal: 130,
     upgradeCostCrystal: 70,
-    energyConsumption: 8,
+    energyConsumption: 1,
     isUpgradeable: false,
   },
   metalMine: {
@@ -32,7 +32,7 @@ export const initialState = {
     mineLevel: 1,
     upgradeCostMetal: 150,
     upgradeCostCrystal: 100,
-    energyConsumption: 8,
+    energyConsumption: 1,
     isUpgradeable: false,
   },
   fuelSynthesizer: {
@@ -40,7 +40,7 @@ export const initialState = {
     mineLevel: 1,
     upgradeCostMetal: 80,
     upgradeCostCrystal: 150,
-    energyConsumption: 12,
+    energyConsumption: 1,
     isUpgradeable: false,
   },
   powerPlant: {
@@ -58,6 +58,10 @@ function gameInterfaceReducer(state = initialState, action) {
     case GAME_LOOP:
       return {
         ...state,
+        totalEnergyRequired:
+          state.crystalMine.energyConsumption +
+          state.metalMine.energyConsumption +
+          state.fuelSynthesizer.energyConsumption,
         productionCoefficient: getProductionCoefficient(state),
         metalResources: Math.round(
           state.metalResources +
@@ -107,33 +111,32 @@ function gameInterfaceReducer(state = initialState, action) {
         },
       };
     case UPGRADE_METAL_MINE:
+      const {
+        mineLevel,
+        mineProduction,
+        upgradeCostMetal,
+        upgradeCostCrystal,
+        energyConsumption,
+      } = action.payload;
       return {
         ...state,
-        totalEnergyRequired:
-          state.totalEnergyRequired + state.metalMine.energyConsumption,
         metalMine: {
           ...state.metalMine,
-          mineLevel: state.metalMine.mineLevel + 1,
-          mineProduction: Math.round(
-            state.metalMine.mineProduction + state.metalMine.mineLevel * 1.1,
-          ),
-          upgradeCostMetal: Math.round(state.metalMine.upgradeCostMetal * 1.5),
-          upgradeCostCrystal: Math.round(
-            state.metalMine.upgradeCostCrystal * 1.5,
-          ),
-          energyConsumption: Math.round(
-            9.2 * (state.metalMine.mineLevel * 1.1),
-          ),
+          mineLevel,
+          mineProduction,
+          upgradeCostMetal,
+          upgradeCostCrystal,
+          energyConsumption,
         },
+
         metalResources: state.metalResources - state.metalMine.upgradeCostMetal,
         crystalResources:
           state.crystalResources - state.metalMine.upgradeCostCrystal,
       };
     case UPGRADE_CRYSTAL_MINE:
+      console.log('UPGRADE_CRYSTAL_MINE:::', state.crystalMine);
       return {
         ...state,
-        totalEnergyRequired:
-          state.totalEnergyRequired + state.crystalMine.energyConsumption,
         crystalMine: {
           ...state.crystalMine,
           mineLevel: state.crystalMine.mineLevel + 1,
@@ -159,8 +162,6 @@ function gameInterfaceReducer(state = initialState, action) {
     case UPGRADE_FUEL_SYNTHESIZER:
       return {
         ...state,
-        totalEnergyRequired:
-          state.totalEnergyRequired + state.fuelSynthesizer.energyConsumption,
         fuelSynthesizer: {
           ...state.fuelSynthesizer,
           mineLevel: state.fuelSynthesizer.mineLevel + 1,

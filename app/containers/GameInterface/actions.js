@@ -13,13 +13,32 @@ import {
   NOT_ENOUGH_ENERGY,
 } from './constants';
 
-const upgradeMetalMineActionCreator = () => ({
+const upgradeMetalMineActionCreator = metalMine => ({
   type: UPGRADE_METAL_MINE,
+  payload: metalMine,
 });
 
 export function upgradeMetalMine() {
-  return dispatch => {
-    dispatch(upgradeMetalMineActionCreator());
+  return (dispatch, getState) => {
+    const {
+      game: {
+        metalMine: {
+          mineLevel,
+          mineProduction,
+          upgradeCostMetal,
+          upgradeCostCrystal,
+        },
+      },
+    } = getState();
+    // console.log('getState():::', metalMine);
+    const result = {
+      mineLevel: mineLevel + 1,
+      mineProduction: Math.round(mineProduction + mineLevel * 1.1),
+      upgradeCostMetal: Math.round(upgradeCostMetal * 1.5),
+      upgradeCostCrystal: Math.round(upgradeCostCrystal * 1.5),
+      energyConsumption: Math.round(9.2 * (mineLevel * 1.1)),
+    };
+    dispatch(upgradeMetalMineActionCreator(result));
   };
 }
 
