@@ -110,7 +110,7 @@ function gameInterfaceReducer(state = initialState, action) {
           ),
         },
       };
-    case UPGRADE_METAL_MINE:
+    case UPGRADE_METAL_MINE: {
       const {
         mineLevel,
         mineProduction,
@@ -133,79 +133,80 @@ function gameInterfaceReducer(state = initialState, action) {
         crystalResources:
           state.crystalResources - state.metalMine.upgradeCostCrystal,
       };
-    case UPGRADE_CRYSTAL_MINE:
-      console.log('UPGRADE_CRYSTAL_MINE:::', state.crystalMine);
+    }
+    case UPGRADE_CRYSTAL_MINE: {
+      const {
+        mineLevel,
+        mineProduction,
+        upgradeCostMetal,
+        upgradeCostCrystal,
+        energyConsumption,
+      } = action.payload;
       return {
         ...state,
         crystalMine: {
           ...state.crystalMine,
-          mineLevel: state.crystalMine.mineLevel + 1,
-          mineProduction: Math.round(
-            state.crystalMine.mineProduction +
-              state.crystalMine.mineLevel * 1.1,
-          ),
-          upgradeCostMetal: Math.round(
-            state.crystalMine.upgradeCostMetal * 1.5,
-          ),
-          upgradeCostCrystal: Math.round(
-            state.crystalMine.upgradeCostCrystal * 1.5,
-          ),
-          energyConsumption: Math.round(
-            9.2 * (state.crystalMine.mineLevel * 1.1),
-          ),
+          mineLevel,
+          mineProduction,
+          upgradeCostMetal,
+          upgradeCostCrystal,
+          energyConsumption,
         },
         metalResources:
           state.metalResources - state.crystalMine.upgradeCostMetal,
         crystalResources:
           state.crystalResources - state.crystalMine.upgradeCostCrystal,
       };
-    case UPGRADE_FUEL_SYNTHESIZER:
+    }
+
+    case UPGRADE_FUEL_SYNTHESIZER: {
+      const {
+        mineLevel,
+        mineProduction,
+        upgradeCostMetal,
+        upgradeCostCrystal,
+        energyConsumption,
+      } = action.payload;
       return {
         ...state,
         fuelSynthesizer: {
           ...state.fuelSynthesizer,
-          mineLevel: state.fuelSynthesizer.mineLevel + 1,
-          mineProduction: Math.round(
-            state.fuelSynthesizer.mineProduction +
-              state.fuelSynthesizer.mineLevel * 1.1,
-          ),
-          upgradeCostMetal: Math.round(
-            state.fuelSynthesizer.upgradeCostMetal * 1.5,
-          ),
-          upgradeCostCrystal: Math.round(
-            state.fuelSynthesizer.upgradeCostCrystal * 1.5,
-          ),
-          energyConsumption: Math.round(
-            9.2 * (state.fuelSynthesizer.mineLevel * 1.6),
-          ),
+          mineLevel,
+          mineProduction,
+          upgradeCostMetal,
+          upgradeCostCrystal,
+          energyConsumption,
         },
         metalResources:
           state.metalResources - state.fuelSynthesizer.upgradeCostMetal,
         crystalResources:
           state.crystalResources - state.fuelSynthesizer.upgradeCostCrystal,
       };
-    case UPGRADE_POWER_PLANT:
+    }
+    case UPGRADE_POWER_PLANT: {
+      const {
+        plantLevel,
+        energyOutput,
+        fuelConsumptionPerTick,
+      } = action.payload;
       return {
         ...state,
         powerPlant: {
           ...state.powerPlant,
-          plantLevel: state.powerPlant.plantLevel + 1,
-          energyOutput:
-            state.powerPlant.energyOutput + 9 * state.powerPlant.plantLevel,
-          fuelConsumptionPerTick: Math.round(
-            state.powerPlant.fuelConsumptionPerTick * 1.7,
-          ),
+          plantLevel,
+          energyOutput,
+          fuelConsumptionPerTick,
           upgradeCostMetal: Math.round(state.powerPlant.upgradeCostMetal * 1.5),
           upgradeCostCrystal: Math.round(
             state.powerPlant.upgradeCostCrystal * 1.5,
           ),
         },
-        energyAvailable: state.energyAvailable + state.powerPlant.energyOutput,
         metalResources:
           state.metalResources - state.powerPlant.upgradeCostMetal,
         crystalResources:
           state.crystalResources - state.powerPlant.upgradeCostCrystal,
       };
+    }
     default:
       return state;
   }

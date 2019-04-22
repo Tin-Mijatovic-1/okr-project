@@ -63,7 +63,6 @@ export class GameInterface extends React.Component {
       fuelResources,
       totalEnergyRequired,
     } = this.props.game;
-    console.log('this.props.game:::', totalEnergyRequired);
     return (
       <div>
         <TopNovbar
