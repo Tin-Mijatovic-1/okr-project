@@ -65,6 +65,10 @@ const StyledButton = styled(({ ...other }) => (
 `;
 
 function PowerPlant(props) {
+  // const [upgrading, setUpgrading] = useState(false);
+  // const [upgradeTime, setUpgradeTime] = useState(6000);
+  // const [countdown, setCountdown] = useState(0);
+
   const { name, onUpgradePlant, data } = props;
 
   return (

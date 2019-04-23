@@ -64,8 +64,41 @@ const StyledButton = styled(({ ...other }) => (
 
 /* eslint-disable react/prefer-stateless-function */
 export class Mine extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { upgrading: false, upgradeTime: 3000, countdown: 1000 };
+  }
+
+  handleUpgrade = () => {
+    const { label, onUpgradeMine } = this.props;
+    this.setState(state => ({
+      upgrading: true,
+      countdown: state.upgradeTime,
+    }));
+
+    setTimeout(() => {
+      this.setState(state => ({
+        upgrading: false,
+        upgradeTime: state.upgradeTime * 1.23,
+      }));
+      onUpgradeMine(label);
+    }, this.state.upgradeTime);
+    this.startCountdown();
+  };
+
+  startCountdown = () => {
+    this.counting = setInterval(() => {
+      if (this.state.countdown >= 0) {
+        this.setState(state => ({ countdown: state.countdown - 1000 }));
+      } else {
+        clearInterval(this.counting);
+      }
+    }, 1000);
+  };
+
   render() {
-    const { name, label, onUpgradeMine, data } = this.props;
+    const { name, data } = this.props;
     const { productionCoefficient } = this.props.game;
     return (
       <StyledCard>
@@ -98,18 +131,44 @@ export class Mine extends React.Component {
               {data.energyConsumption}
             </StyledTypography>
           </StyledTypography>
+          <StyledTypography variant="h3">
+            Upgrade Time
+            <StyledTypography paragraph>
+              {Math.round(this.state.upgradeTime / 1000)} sec
+            </StyledTypography>
+          </StyledTypography>
           <StyledButton
             upgradeable={isUpgradeable(this.props) ? 1 : 0}
             variant="contained"
-            onClick={() => onUpgradeMine(label)}
+            onClick={() => this.handleUpgrade()}
+            disabled={this.state.upgrading}
           >
-            Upgrade
+            {!this.state.upgrading
+              ? 'Upgrade'
+              : Math.round(this.state.countdown / 1000)}
           </StyledButton>
         </CardContent>
       </StyledCard>
     );
   }
 }
+
+// function handleUpgrade(props) {
+//   const { label, onUpgradeMine, upgradeing } = props;
+//   onUpgradeMine(label);
+//   // this.setState({
+//   //   upgradeing: true,
+//   // });
+//   console.log(this.state.upgradeing);
+//
+//   console.log('true');
+//   setInterval(() => {
+//     console.log('false');
+//     // this.setState({
+//     //   upgradeing: false,
+//     // });
+//   }, 2000);
+// }
 
 function isUpgradeable(props) {
   return (

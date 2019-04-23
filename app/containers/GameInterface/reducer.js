@@ -25,7 +25,6 @@ export const initialState = {
     upgradeCostMetal: 130,
     upgradeCostCrystal: 70,
     energyConsumption: 1,
-    isUpgradeable: false,
   },
   metalMine: {
     mineProduction: 15,
@@ -33,7 +32,6 @@ export const initialState = {
     upgradeCostMetal: 150,
     upgradeCostCrystal: 100,
     energyConsumption: 1,
-    isUpgradeable: false,
   },
   fuelSynthesizer: {
     mineProduction: 4,
@@ -41,7 +39,6 @@ export const initialState = {
     upgradeCostMetal: 80,
     upgradeCostCrystal: 150,
     energyConsumption: 1,
-    isUpgradeable: false,
   },
   powerPlant: {
     energyOutput: 30,
@@ -49,7 +46,6 @@ export const initialState = {
     upgradeCostMetal: 80,
     upgradeCostCrystal: 150,
     fuelConsumptionPerTick: 2,
-    isUpgradeable: false,
   },
 };
 

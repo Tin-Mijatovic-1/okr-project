@@ -72,21 +72,6 @@ export class GameInterface extends React.Component {
           energyProductin={powerPlant.energyOutput}
           energyRequired={totalEnergyRequired}
         />
-        <div>
-          <strong>Metal: {metalResources}</strong>
-        </div>
-        <div>
-          <strong>Crystal: {crystalResources}</strong>
-        </div>
-        <div>
-          <strong>Fuel: {fuelResources}</strong>
-        </div>
-        <div>
-          <strong>
-            Energy Produced: {powerPlant.energyOutput} | Energy Required:{' '}
-            {totalEnergyRequired}
-          </strong>
-        </div>
         <div
           style={{
             width: '100%',
