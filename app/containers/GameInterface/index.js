@@ -19,6 +19,7 @@ import {
   gameLoop,
 } from './actions';
 import TopNovbar from '../../components/TopNovbar';
+import { Shipyard } from '../Shipyard';
 
 /* eslint-disable react/prefer-stateless-function */
 export class GameInterface extends React.Component {
@@ -104,6 +105,16 @@ export class GameInterface extends React.Component {
             label="powerPlant"
             data={powerPlant}
           />
+        </div>
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            align: 'center',
+          }}
+        >
+          <Shipyard />
         </div>
       </div>
     );
