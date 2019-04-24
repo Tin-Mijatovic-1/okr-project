@@ -13,9 +13,9 @@ import {
 } from './constants';
 
 export const initialState = {
-  metalResources: 11101,
-  crystalResources: 11110,
-  fuelResources: 11110,
+  metalResources: 11111,
+  crystalResources: 11111,
+  fuelResources: 0,
   totalEnergyRequired: 0,
   productionCoefficient: 1,
 
@@ -45,7 +45,7 @@ export const initialState = {
     plantLevel: 1,
     upgradeCostMetal: 80,
     upgradeCostCrystal: 150,
-    fuelConsumptionPerTick: 2,
+    fuelConsumptionPerTick: 5,
   },
 };
 
@@ -70,8 +70,8 @@ function gameInterfaceReducer(state = initialState, action) {
         fuelResources: Math.round(
           state.fuelResources +
             (state.fuelSynthesizer.mineProduction -
-              state.powerPlant.fuelConsumptionPerTick) *
-              state.productionCoefficient,
+              state.powerPlant.fuelConsumptionPerTick *
+                state.productionCoefficient),
         ),
         metalMine: {
           ...state.metalMine,
@@ -215,7 +215,11 @@ function isUpgradeable(state, metalCost, crystalCost) {
 }
 
 function getProductionCoefficient(state) {
-  if (state.totalEnergyRequired > state.powerPlant.energyOutput) return 0.1;
+  if (
+    state.totalEnergyRequired > state.powerPlant.energyOutput ||
+    state.fuelResources <= 0
+  )
+    return 0.2;
   return 1;
 }
 
