@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import Mine from '../Mine';
+import PowerPlant from '../PowerPlant';
 import {
   upgradeCrystalMine,
   upgradeMetalMine,
@@ -17,7 +18,6 @@ import {
   upgradePowerPlant,
   gameLoop,
 } from './actions';
-import PowerPlant from '../../components/PowerPlant';
 import TopNovbar from '../../components/TopNovbar';
 
 /* eslint-disable react/prefer-stateless-function */
@@ -103,7 +103,6 @@ export class GameInterface extends React.Component {
             onUpgradePlant={this.handleUpgradePlant}
             label="powerPlant"
             data={powerPlant}
-            game={this.props.game}
           />
         </div>
       </div>

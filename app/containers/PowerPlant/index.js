@@ -1,17 +1,20 @@
 /**
  *
- * Mine
+ * PowerPlant
  *
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Card from '@material-ui/core/Card';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import injectReducer from 'utils/injectReducer';
 import CardContent from '@material-ui/core/CardContent';
+import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import reducer from './reducer';
 
 const StyledCard = styled(({ ...other }) => (
   <Card classes={{ root: 'root' }} {...other} />
@@ -63,7 +66,7 @@ const StyledButton = styled(({ ...other }) => (
 `;
 
 /* eslint-disable react/prefer-stateless-function */
-export class Mine extends React.Component {
+export class PowerPlant extends React.Component {
   constructor(props) {
     super(props);
 
@@ -71,7 +74,7 @@ export class Mine extends React.Component {
   }
 
   handleUpgrade = () => {
-    const { label, onUpgradeMine } = this.props;
+    const { label, onUpgradePlant } = this.props;
     this.setState(state => ({
       upgrading: true,
       countdown: state.upgradeTime,
@@ -82,7 +85,7 @@ export class Mine extends React.Component {
         upgrading: false,
         upgradeTime: state.upgradeTime * 1.23,
       }));
-      onUpgradeMine(label);
+      onUpgradePlant(label);
     }, this.state.upgradeTime);
     this.startCountdown();
   };
@@ -99,19 +102,17 @@ export class Mine extends React.Component {
 
   render() {
     const { name, data } = this.props;
-    const { productionCoefficient } = this.props.game;
+
     return (
       <StyledCard>
         <CardContent>
           <StyledTypography variant="h5">{name}</StyledTypography>{' '}
           <StyledTypography variant="h5">
-            Level {data.mineLevel}
+            Level {data.plantLevel}
           </StyledTypography>
           <StyledTypography variant="h3">
-            Production:
-            <StyledTypography paragraph>
-              {Math.round(data.mineProduction * productionCoefficient)}
-            </StyledTypography>
+            Energy Output:
+            <StyledTypography paragraph>{data.energyOutput}</StyledTypography>
           </StyledTypography>
           <StyledTypography variant="h3">
             Upgrade Cost Metal:
@@ -126,9 +127,9 @@ export class Mine extends React.Component {
             </StyledTypography>
           </StyledTypography>
           <StyledTypography variant="h3">
-            Energy Consumption:
+            Fuel Consumption
             <StyledTypography paragraph>
-              {data.energyConsumption}
+              {data.fuelConsumptionPerTick}
             </StyledTypography>
           </StyledTypography>
           <StyledTypography variant="h3">
@@ -153,26 +154,39 @@ export class Mine extends React.Component {
   }
 }
 
+PowerPlant.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  onUpgradePlant: PropTypes.func,
+  data: PropTypes.object,
+};
+
 function isUpgradeable(props) {
   return (
     props.game.metalResources >= props.data.upgradeCostMetal &&
     props.game.crystalResources >= props.data.upgradeCostCrystal
   );
 }
-
 function mapStateToProps(state) {
   return {
     game: state.game,
   };
 }
 
-Mine.propTypes = {
-  label: PropTypes.string,
-  name: PropTypes.string,
-  onUpgradeMine: PropTypes.func.isRequired,
-  data: PropTypes.object,
-  game: PropTypes.object,
-  productionCoefficient: PropTypes.number,
-};
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch,
+  };
+}
 
-export default connect(mapStateToProps)(Mine);
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withReducer = injectReducer({ key: 'powerPlant', reducer });
+
+export default compose(
+  withReducer,
+  withConnect,
+)(PowerPlant);
