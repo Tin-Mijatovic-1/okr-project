@@ -5,51 +5,93 @@
  */
 
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import Factory from '../Factory';
+import {
+  upgradeShipParts as upgradeShipPartsAction,
+  upgradeShipFactory as upgradeShipFactoryAction,
+  upgradeShipHangar as upgradeShipHangarAction,
+} from './actions';
 
-import injectReducer from 'utils/injectReducer';
-import styled from 'styled-components';
-import Card from '@material-ui/core/Card';
-import makeSelectShipyard from './selectors';
-import reducer from './reducer';
-
-const StyledCard = styled(({ ...other }) => (
-  <Card classes={{ root: 'root' }} {...other} />
-))`
-  width: 400px;
-  margin: 10px;
-
-  &.root {
-    background-color: #f0f0f0;
-    text-align: center;
-    align: center;
-  }
-`;
 /* eslint-disable react/prefer-stateless-function */
-export class Shipyard extends React.Component {
+class Shipyard extends React.Component {
+  handelUpgradeFactory = label => {
+    const {
+      upgradeShipParts,
+      upgradeShipFactory,
+      upgradeShipHangar,
+    } = this.props;
+    switch (label) {
+      case 'Ship Parts Manufacturer': {
+        upgradeShipParts();
+        break;
+      }
+      case 'Ship Factory': {
+        upgradeShipFactory();
+        break;
+      }
+      case 'Ship Hangar': {
+        upgradeShipHangar();
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  };
+
   render() {
+    // console.log(this.props.shipyard);
     return (
-      <div>
-        <StyledCard />
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'row',
+          align: 'center',
+        }}
+      >
+        <Factory
+          label="Ship Parts Manufacturer"
+          data={this.props.shipyard.shipPartsFactory}
+          handleUpgrade={this.handelUpgradeFactory}
+        />
+        <Factory
+          label="Ship Factory"
+          data={this.props.shipyard.shipFactory}
+          handleUpgrade={this.handelUpgradeFactory}
+        />
+
+        <Factory
+          label="Ship Hangar"
+          data={this.props.shipyard.shipHangar}
+          handleUpgrade={this.handelUpgradeFactory}
+        />
       </div>
     );
   }
 }
 
-// Shipyard.propTypes = {
-//   dispatch: PropTypes.func,
-// };
+Shipyard.propTypes = {
+  shipyard: PropTypes.object,
+  upgradeShipParts: PropTypes.func,
+  upgradeShipFactory: PropTypes.func,
+  upgradeShipHangar: PropTypes.func,
+};
 
-const mapStateToProps = createStructuredSelector({
-  shipyard: makeSelectShipyard(),
-});
+function mapStateToProps(state) {
+  return {
+    shipyard: state.shipyard,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    upgradeShipParts: () => dispatch(upgradeShipPartsAction()),
+    upgradeShipFactory: () => dispatch(upgradeShipFactoryAction()),
+    upgradeShipHangar: () => dispatch(upgradeShipHangarAction()),
   };
 }
 
@@ -58,9 +100,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer({ key: 'shipyard', reducer });
-
-export default compose(
-  withReducer,
-  withConnect,
-)(Shipyard);
+export default compose(withConnect)(Shipyard);

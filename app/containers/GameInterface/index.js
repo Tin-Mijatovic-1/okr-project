@@ -19,7 +19,7 @@ import {
   gameLoop,
 } from './actions';
 import TopNovbar from '../../components/TopNovbar';
-import { Shipyard } from '../Shipyard';
+import Shipyard from '../Shipyard';
 
 /* eslint-disable react/prefer-stateless-function */
 export class GameInterface extends React.Component {
@@ -65,7 +65,11 @@ export class GameInterface extends React.Component {
       totalEnergyRequired,
     } = this.props.game;
     return (
-      <div>
+      <div
+        style={{
+          background: '#0D1C2D',
+        }}
+      >
         <TopNovbar
           metal={metalResources}
           crystal={crystalResources}
